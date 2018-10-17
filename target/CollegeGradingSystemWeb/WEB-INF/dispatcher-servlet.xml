@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- was: <?xml version="1.0" encoding="UTF-8"?> -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    
+    <context:annotation-config/>
+    <context:component-scan base-package="controller" />
+    <mvc:annotation-driven/>
+    
+    <!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+    up static resources in the ${webappRoot}/resources directory -->
+    <mvc:resources mapping="/resources/**" location="/resources/" />
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/jsp/"
+          p:suffix=".jsp" />
+    
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+        <!--  <property name="url" value="oracle:thin:@//localhost:1521:xe"/> -->
+        <property name="url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=LOCALHOST)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=XE)))" />
+        <property name="username" value="cgs_spring"/>
+        <property name="password" value="123"/>
+    </bean>
+    
+    <!-- Hibernate 4 SessionFactory Bean definition -->
+    <bean id="hibernate4AnnotatedSessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="annotatedClasses">
+            <list>
+                <value>model.Student</value>
+                <value>model.Course</value>
+                <value>model.Teacher</value>
+                <value>model.Result</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.OracleDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="use_sql_comments">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+    </bean>
+    <!-- student -->
+    <bean id="studentDAO" class="dao.StudentDAOImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+        <beans:property name="courseDAO" ref="courseDAO"></beans:property>
+        <beans:property name="resultDAO" ref="resultDAO"></beans:property>
+    </bean>
+    
+    <bean id="studentService" class="service.StudentServiceImpl">
+        <property name="studentDAO" ref="studentDAO"></property>
+    </bean>
+    <!-- Course -->
+    <bean id="courseDAO" class="dao.CourseDAOImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+        <beans:property name="resultDAO" ref="resultDAO"></beans:property>  
+    </bean>
+    
+    <bean id="courseService" class="service.CourseServiceImpl">
+        <property name="courseDAO" ref="courseDAO"></property>
+    </bean>
+    <!-- Teacher -->
+    <bean id="teacherDAO" class="dao.TeacherDAOImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+        <beans:property name="courseDAO" ref="courseDAO"></beans:property>
+    </bean>
+    
+    <bean id="teacherService" class="service.TeacherServiceImpl">
+        <property name="teacherDAO" ref="teacherDAO"></property>
+    </bean>
+    <!-- Result -->
+    <bean id="resultDAO" class="dao.ResultDAOImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    
+    <bean id="resultService" class="service.ResultServiceImpl">
+        <property name="resultDAO" ref="resultDAO"></property>
+    </bean>
+    
+    <!-- -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+	
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    
+</beans>

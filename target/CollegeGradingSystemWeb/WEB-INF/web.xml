@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<web-app>
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>/WEB-INF/log4j.properties</param-value>
+    </context-param>
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/WEB-INF/jsp/login.jsp</form-login-page>
+            <form-error-page>/WEB-INF/jsp/error.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+    <security-role>
+        <role-name>admin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>programAdmin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>teacher</role-name>
+    </security-role>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>public resources</web-resource-name>
+            <url-pattern>/WEB-INF/applicationContext.xml</url-pattern>
+            <url-pattern>/resources/*</url-pattern>
+            <url-pattern>/WEB-INF/jsp/header.jsp</url-pattern>
+            <url-pattern>/WEB-INF/login.jsp</url-pattern>
+            <url-pattern>/WEB-INF/error.jsp</url-pattern>
+            <url-pattern>/WEB-INF/logout.jsp</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>welcome resource</web-resource-name>
+            <url-pattern>/index.jsp</url-pattern>
+            <url-pattern>/logout</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+            <role-name>programAdmin</role-name>
+            <role-name>teacher</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>program admin resource</web-resource-name>
+            <url-pattern>/course_form</url-pattern>
+            <url-pattern>/course_list</url-pattern>
+            <url-pattern>/course/add</url-pattern>
+            <url-pattern>/course/remove/*</url-pattern>
+            <url-pattern>/course/detail/*</url-pattern>
+            <url-pattern>/course/edit/*</url-pattern>
+            <url-pattern>/student_course/*</url-pattern>
+            <url-pattern>/teacher_course/*</url-pattern>
+            <url-pattern>/teacher_form</url-pattern>
+            <url-pattern>/teacher/add</url-pattern>
+            <url-pattern>/student_form</url-pattern>
+            <url-pattern>/student/add</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+            <role-name>programAdmin</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>teacher resource</web-resource-name>
+            <url-pattern>/result_form</url-pattern>
+            <url-pattern>/result_list</url-pattern>
+            <url-pattern>/result/add</url-pattern>
+            <url-pattern>/result/remove/*</url-pattern>
+            <url-pattern>/result/edit/*</url-pattern>
+            <url-pattern>/course_form</url-pattern>
+            <url-pattern>/course/add</url-pattern>
+            <url-pattern>/student_form</url-pattern>
+            <url-pattern>/student/add</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+            <role-name>teacher</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin resource</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>
+            org.springframework.web.util.Log4jConfigListener
+        </listener-class>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
