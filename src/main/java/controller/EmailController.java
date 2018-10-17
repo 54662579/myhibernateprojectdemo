@@ -69,14 +69,14 @@ public class EmailController {
                 new javax.mail.Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("mcitmymail", "July2018");
+                return new PasswordAuthentication("yourEmailId", "yourEmailPassword");
             }
         });
 
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("mcitmymail@gmail.com"));
+            message.setFrom(new InternetAddress("yourEmailId@gmail.com"));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(mailAddress));
             message.setSubject("News");
