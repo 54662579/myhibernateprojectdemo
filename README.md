@@ -1,4 +1,4 @@
-# myhibernateprojectdemo
+# My Hibernate Project Demo
 
 Environment: Apache Tomcat 8.0, jre 1.8.0_73, Oracle 11g, Netbeans 8.2.
 
